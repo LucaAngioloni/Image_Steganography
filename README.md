@@ -42,7 +42,7 @@ This script is working!!!
 
 Running the script like:
 ```
-$ python3 Image_Steganography.py -e -i resources/original.png -f resources/file.txt
+$ python3 Image_Steganography.py -e -i resources/original.png -f resources/file.txt -o resources/encoded.png
 ```
 
 The result is an encoded image which looks identical to the original:
