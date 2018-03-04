@@ -30,33 +30,83 @@ max_value = 255 # max uint value per pixel per channel
 header_len = 4*8 # uint32 bit length
 
 def read_image(img_path):
+    """
+        Reads an image from file and flattens it.
+        Args:
+            img_path    path to the image
+        Returns:
+            ndarray     numpy array containing the image in a flat shape
+            ndarray     shape of the read image before flattening
+    """
     img = np.array(imread(img_path), dtype=np.uint8)
     orig_shape = img.shape
     return img.flatten(), orig_shape
 
 def write_image(img_path, img_data, shape):
+    """
+        Writes an image to a path from a flat numpy array, usig the shape provided.
+        Args:
+            img_path    path were to save the image
+            img_data    numpy array containing the image (flat)
+            shape       shape of the image to be saved
+    """
     img_data = np.reshape(img_data, shape)
     imwrite(img_path, img_data)
 
 def bytes2array(byte_data):
+    """
+        Converts byte data to a bit array (numpy array, dtype=np.uint8).
+        Args:
+            byte_data   the byte data
+        Returns:
+            ndarray     a numpy array of the single bits that composed the byte data
+    """
     byte_array = np.frombuffer(byte_data, dtype=np.uint8)
     return np.unpackbits(byte_array)
 
 def array2bytes(bit_array):
+    """
+        Converts a bit array (numpy array, dtype=np.uint8) to byte data.
+        Args:
+            bit_array   the bit array
+        Returns:
+            bytes       the byte data
+    """
     byte_array = np.packbits(bit_array)
     return byte_array.tobytes()
 
 def read_file(file_path):
+    """
+        Reads a file as a bit array (numpy array, dtype=np.uint8)
+        Args:
+            file_path   path to the file
+        Returns:
+            ndarray     the bit array
+    """
     file_bytes = open(file_path, "rb").read()
     return bytes2array(file_bytes)
 
 def write_file(file_path, file_bit_array):
+    """
+        Writes a file to a path from a bit array (numpy array, dtype=np.uint8).
+        Args:
+            file_path       path to the file
+            file_bit_array  the bit array of the file
+    """
     bytes_data = array2bytes(file_bit_array)
     f = open(file_path, 'wb')
     f.write(bytes_data)
     f.close()
 
 def encode_data(image, file_data):
+    """
+        Encodes the file data onto the image
+        Args:
+            image       the original image numpy array (flat)
+            file_data   the file data (bit array)
+        Returns:
+            ndarray     the encoded image as a numpy array
+    """
     or_mask = file_data
     and_mask = np.zeros_like(or_mask)
     and_mask = (and_mask + max_value - 1) + or_mask 
@@ -65,11 +115,19 @@ def encode_data(image, file_data):
     return res
 
 def decode_data(encoded_data):
+    """
+        Decodes the data from an image
+        Args:
+            encoded_data    the encoded image as numpy array
+        Returns:
+            ndarray         the bit array containig the file bits
+    """
     out_mask = np.ones_like(encoded_data)
     output = np.bitwise_and(encoded_data, out_mask)
     return output
 
 def _main(args):
+    """Main fuction of the script"""
     if args.image is not None and args.file is not None:
         if args.encode:
             img_path = args.image
