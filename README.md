@@ -47,7 +47,7 @@ $ python3 Image_Steganography.py -e -i resources/original.png -f resources/file.
 
 The result is an encoded image which looks identical to the original:
 
-[![Original](resources/original.png)]() | [![Encoded](resources/encoded.png)]()
+![Original](resources/original.png) | ![Encoded](resources/encoded.png)
 |:---:|:---:|
 | Original | Encoded |
 
