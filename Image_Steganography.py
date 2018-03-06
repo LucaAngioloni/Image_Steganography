@@ -154,11 +154,14 @@ def _main(args):
             len_array = np.unpackbits(len_array)
             img_len = image.shape[0]
 
-            if file_len >= img_len - header_len: # 4 bytes are used to store file length
+            if file_len >= img_len - header_len:  # 4 bytes are used to store file length
                 print("File too big, error")
                 return
-            else:
-                file = np.pad(file, (header_len,img_len - file_len - header_len), 'constant', constant_values=(0, 0))
+            else:  #  Insert padding. Using random padding, otherwise values would all be even if padding with zeros (could be noticed in histogram).
+                tmp = file
+                file = np.random.randint(2, size=img_len, dtype=np.uint8)
+                file[header_len:header_len+file_len] = tmp
+                # file = np.pad(file, (header_len,img_len - file_len - header_len), 'constant', constant_values=(0, 0))
 
             file[:header_len] = len_array
             encoded_data = encode_data(image, file)
